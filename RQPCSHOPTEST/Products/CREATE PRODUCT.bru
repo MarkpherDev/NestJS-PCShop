@@ -1,0 +1,19 @@
+meta {
+  name: CREATE PRODUCT
+  type: http
+  seq: 2
+}
+
+post {
+  url: http://localhost:3000/api/v1/products
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "printer",
+    "model": "OfficeJet Pro 6978",
+    "price": 179.99
+  }
+}

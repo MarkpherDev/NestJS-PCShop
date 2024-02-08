@@ -1,0 +1,17 @@
+meta {
+  name: REMOVE PRODUCT
+  type: http
+  seq: 5
+}
+
+delete {
+  url: http://localhost:3000/api/v1/products/9
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "name": "mouse modificado3"
+  }
+}
