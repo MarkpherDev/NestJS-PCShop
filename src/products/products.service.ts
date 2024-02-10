@@ -6,6 +6,7 @@ import { Product } from './entities/product.entity'
 import { Repository } from 'typeorm'
 import * as fs from 'fs/promises'
 import * as path from 'path'
+import { rutaImages } from 'src/common/contants'
 
 @Injectable()
 export class ProductsService {
@@ -42,7 +43,7 @@ export class ProductsService {
     const productFound = await this.findOne(id)
     if (productFound.image && image) {
       await fs.unlink(
-        path.join(process.cwd(), `./public/images/${productFound.image}`)
+        path.join(process.cwd(), `${rutaImages}${productFound.image}`)
       )
     }
     updateProductDto.image = image?.filename
@@ -61,7 +62,9 @@ export class ProductsService {
   async remove(id: number) {
     const productFound = await this.findOne(id)
 
-    await fs.unlink(path.join(process.cwd(), `./images/${productFound.image}`))
+    await fs.unlink(
+      path.join(process.cwd(), `${rutaImages}${productFound.image}`)
+    )
 
     await this.productRepository.delete({ id })
 
