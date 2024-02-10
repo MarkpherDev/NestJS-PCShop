@@ -4,6 +4,8 @@ import { UpdateProductDto } from './dto/update-product.dto'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Product } from './entities/product.entity'
 import { Repository } from 'typeorm'
+import * as fs from 'fs/promises'
+import * as path from 'path'
 
 @Injectable()
 export class ProductsService {
@@ -11,8 +13,11 @@ export class ProductsService {
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>
   ) {}
-  async create(createProductDto: CreateProductDto) {
-    return await this.productRepository.save(createProductDto)
+  async create(createProductDto: CreateProductDto, image: Express.Multer.File) {
+    createProductDto.image = image?.filename
+
+    const product = this.productRepository.create(createProductDto)
+    return await this.productRepository.save(product)
   }
 
   async findAll() {
@@ -29,12 +34,25 @@ export class ProductsService {
     return productFound
   }
 
-  async update(id: number, updateProductDto: UpdateProductDto) {
+  async update(
+    id: number,
+    updateProductDto: UpdateProductDto,
+    image: Express.Multer.File
+  ) {
     const productFound = await this.findOne(id)
-
-    if (!productFound) {
-      throw new NotFoundException('Product not found')
+    if (productFound.image && image) {
+      await fs.unlink(
+        path.join(process.cwd(), `./public/images/${productFound.image}`)
+      )
     }
+    updateProductDto.image = image?.filename
+    await this.productRepository.update(id, updateProductDto)
+
+    return await this.findOne(id)
+  }
+
+  async updateWithoutFile(id: number, updateProductDto: UpdateProductDto) {
+    await this.findOne(id)
     await this.productRepository.update(id, updateProductDto)
 
     return await this.findOne(id)
@@ -43,9 +61,7 @@ export class ProductsService {
   async remove(id: number) {
     const productFound = await this.findOne(id)
 
-    if (!productFound) {
-      throw new NotFoundException('Product not found')
-    }
+    await fs.unlink(path.join(process.cwd(), `./images/${productFound.image}`))
 
     await this.productRepository.delete({ id })
 

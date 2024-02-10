@@ -1,11 +1,4 @@
-import {
-  IsDecimal,
-  IsNumber,
-  IsOptional,
-  IsPositive,
-  IsString,
-  MinLength
-} from 'class-validator'
+import { IsDecimal, IsString, MinLength } from 'class-validator'
 export class CreateProductDto {
   @IsString()
   @MinLength(2)
@@ -15,11 +8,8 @@ export class CreateProductDto {
   @MinLength(2)
   model: string
 
-  @IsNumber({ maxDecimalPlaces: 2 })
-  @IsPositive()
+  @IsDecimal({ decimal_digits: '2' })
   price: number
 
-  @IsString()
-  @IsOptional()
-  image: string
+  image?: string
 }

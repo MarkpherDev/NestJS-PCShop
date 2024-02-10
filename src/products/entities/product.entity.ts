@@ -1,4 +1,3 @@
-import { defaultImage } from 'src/common/contants'
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
 
 @Entity()
@@ -15,6 +14,6 @@ export class Product {
   @Column({ type: 'decimal', precision: 10, scale: 2, nullable: false })
   price: number
 
-  @Column({ default: defaultImage })
+  @Column()
   image: string
 }
