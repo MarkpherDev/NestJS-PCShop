@@ -2,6 +2,8 @@ import { Module } from '@nestjs/common'
 import { ProductsModule } from './products/products.module'
 import { TypeOrmModule } from '@nestjs/typeorm'
 import { config } from 'dotenv'
+import { UsersModule } from './users/users.module'
+import { AuthModule } from './auth/auth.module'
 config()
 
 @Module({
@@ -16,7 +18,9 @@ config()
       autoLoadEntities: true,
       synchronize: true
     }),
-    ProductsModule
+    ProductsModule,
+    UsersModule,
+    AuthModule
   ],
   controllers: [],
   providers: []
